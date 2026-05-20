@@ -3,14 +3,16 @@ const express = require('express')
 const app = express()
 const port = 3000
 const mysql = require('mysql2');
+require('dotenv').config();
 
-app.use(express.json()); // ¡Esta línea es vital!
+
+app.use(express.json()); 
 
 const pool = mysql.createPool({
-  host: 'localhost',
-   user: 'root',
-   password: 'Heatens123-', // Cambia esto por tu contraseña real
-   database: 'clinicapsicologica',
+  host: process.env.DB_HOST,
+   user: process.env.DB_USER,
+   password: process.env.DB_PASS,
+   database: process.env.DB_NAME,
   waitForConnections: true,    // Si no hay conexiones libres, espera en cola
   connectionLimit: 10,         // Número máximo de conexiones simultáneas
   queueLimit: 0,               // Sin límite de peticiones en cola
