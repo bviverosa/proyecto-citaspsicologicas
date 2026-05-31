@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <style>
+      .btn-personalizado {
+      background-color: #ab6efa !important;
+      border-color: #5d23a8 !important;
+      color: #5d23a8 !important;
+      transition: background-color 0.3s ease, color 0.3s ease; 
+      }
+
+  
+      .btn-personalizado:hover {
+        background-color: #5d23a8 !important; 
+        color: #ffffff !important;
+        border-color: #5d23a8 !important;
+      }
+
+      .caja-acerca-de {
+        background-color: #f3e8ff !important;
+        color: #000000 !important;
+        border-radius: 10px;
+    }
+
+      .caja-acerca-de h1 {
+        color: #000000; /* El morado de tu barra superior */
+    }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #ab6efa;">
+      <a class="navbar-brand" href="#"><%= title %></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Inicio <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Citas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Actividades</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">perfil</a>
+          </li>
+        </ul>
+      </div>
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0 btn-personalizado" type="submit">Buscar</button>
+      </form>
+    </nav>
