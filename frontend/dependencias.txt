@@ -1,0 +1,2 @@
+npm i html-webpack-plugin
+npm i webpack-dev-server --save-dev

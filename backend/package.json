@@ -1,0 +1,18 @@
+{
+  "name": "backendbase2",
+  "version": "1.0.0",
+  "main": "Application.js",
+  "scripts": {
+    "start": "node Application.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.22.4",
+    "sequelize": "^6.37.8"
+  }
+}
