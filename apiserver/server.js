@@ -13,10 +13,10 @@ const pool = mysql.createPool({
    user: process.env.DB_USER,
    password: process.env.DB_PASS,
    database: process.env.DB_NAME,
-  waitForConnections: true,    // Si no hay conexiones libres, espera en cola
-  connectionLimit: 10,         // Número máximo de conexiones simultáneas
-  queueLimit: 0,               // Sin límite de peticiones en cola
-  keepAliveInitialDelay: 10000, // Envía un ping automático para evitar que MySQL la cierre por inactividad
+  waitForConnections: true,    
+  connectionLimit: 10,         
+  queueLimit: 0,              
+  keepAliveInitialDelay: 10000, 
   enableKeepAlive: true
 });
 app.get('/getPatientData/:id', (req, res) => {
@@ -145,7 +145,38 @@ app.post('/registerPsicologistData', (req, res) => {
       res.json({ message: 'Psychologist information registered successfully' });
     });
   });
-
+  app.patch('/updatePsicologistData/:id', (req, res) => {
+  const { id } = req.params;
+  const { nombre,
+    email,
+    estado_actividad
+   }= req.body;
+  
+    const valores = [
+      id,
+      nombre || null,
+      email || null,
+      estado_actividad || null
+    ];
+    pool.query('CALL actualizarPsicologo(?, ?, ?, ?)', valores, function (error, results, fields) {
+      if (error) throw error;
+      res.json({ message: 'Psychologist information updated successfully' });
+    });
+  });
+//Citas
+app.put('/addAppointment', (req, res) => {
+  const { id_paciente, id_psicologo, fecha_hora, modalidad } = req.body; 
+  const valores = [id_paciente, id_psicologo, fecha_hora, modalidad];
+  pool.query('CALL agregarCita(?, ?, ?, ?)', valores, function (error, results, fields) {
+    if (error) throw error;
+    res.json({ message: 'Appointment added successfully' });
+  });
+});
+app.get('getPsicologistData/:id', (req, res) => {
+  pool.query('CALL obtenerPsicologo(?)', [req.params.id], function (error, results, fields) {
+    if (error) throw error;
+    res.json(results[0]);
+  })});
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
