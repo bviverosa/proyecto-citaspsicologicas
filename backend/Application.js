@@ -392,6 +392,7 @@ app.get('/getAppointment/:id', async (req, res) => {
       replacements: { id }
     });
     res.json(result[0]);
+    console.log(result[0]);
   } catch (error) {
     console.error('Error al obtener cita:', error);
     res.status(500).json({ error: 'Internal server error' });
