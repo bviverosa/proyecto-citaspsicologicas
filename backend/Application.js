@@ -4,22 +4,92 @@ const port = 8080;
 require('dotenv').config();
 const path = require('path');
 const bycrypt = require('bcrypt');
-// IMPORTANTE: Importamos tu conexión real
 const sequelize = require('./database.js'); 
-const Usuario = require('./model/Usuario.js'); // Importamos tu modelo
+const Usuario = require('./model/Usuario.js'); 
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
+app.patch('/updatePassword', async (req, res) => {
+  const { email, nueva_contrasena,  vieja_contrasena } = req.body;
+  try {
+    const [rows] = await sequelize.query(
+      'CALL obtenerUsuario(?)',
+      { replacements: [email] }
+    );
+    const usuario = rows[0];
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    const contrasenaValida = await bycrypt.compare(vieja_contrasena, usuario.contrasena);
+
+    if (contrasenaValida) {
+      const saltRounds = 10;
+      const nuevaContrasenaHash = await bycrypt.hash(nueva_contrasena, saltRounds);
+      await sequelize.query(
+        'CALL actualizarContrasena(?, ?)',
+        { replacements: [email, nuevaContrasenaHash] }
+      );
+      res.json({ message: 'Contraseña actualizada exitosamente' });
+    }else{
+       return res.status(401).json({ error: 'Contraseña actual incorrecta' });
+    }
+
+
+  }catch (error) {
+
+    console.error('Error al actualizar contraseña:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+app.post('/logIn', async (req, res) => {
+  const { email, contrasena } = req.body; // 'contrasena' viene en texto plano desde el formulario
+
+  try {
+    const [rows] = await sequelize.query(
+      'CALL obtenerUsuario(?)',
+      { replacements: [email] }
+    );
+
+   
+    const usuario = rows[0]; 
+
+    if (!usuario) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+
+    
+    const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
+
+    if (!contrasenaValida) {
+      return res.status(401).json({ error: 'Contraseña inválida' });
+    }
+
+    if (usuario.estado !== 1) {
+      return res.status(403).json({ error: 'Este usuario se encuentra inactivo' });
+    }
+
+  
+    res.json({
+      message: 'Login successful',
+      user: {
+        id: usuario.id_usuario,
+        nombre: usuario.nombre_usuario,
+        rol: usuario.rol_usuario
+      }
+    });
+} catch (error) {
+    console.error('Error en el login:', error);
+    res.status(500).json({ error: 'Error interno del servidor al validar' });
+  }
+});
+
 // Pacientes
 //Endpoint para registrar los datos del paciente
-/*
-EN PROCESO
-app.patch('/updatePassword', async (req, res) => {
-  const { id_usuario, nueva_contrasena,  vieja_contrasena } = req.body;
-  try {
-});*/
-
 app.post('/registerPatientData', async (req, res) => {
   const { 
     nombre, email, fecha_nacim, genero, domicilio, 
@@ -123,50 +193,40 @@ app.put('/deactivatePatient/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 //Psicólogos
 //Endpoint para registrar los datos del psicólogo
 app.post('/registerPsychologistData', async (req, res) => {
   const { nombre, email, cedula, enfoque } = req.body;
 
   try {
-    // =========================================================================
-    // 1. GENERAR CONTRASEÑA TEMPORAL 
-    // Ejemplo: "Carlos Mendoza" y Cédula "1234567" -> Carl4567
-    // =========================================================================
+    // Generar la contraseña
+    // Ejemplo: "Carlos Mendoza" y Cédula "1234567" sería Carl4567
     const primerasCuatroLetras = nombre.substring(0, 4).replace(/\s+/g, '');
-    const ultimosCuatroCedula = cedula.slice(-4); // Toma los últimos 4 caracteres
+    const ultimosCuatroCedula = cedula.slice(-4); 
     const contrasenaPlana = `${primerasCuatroLetras}${ultimosCuatroCedula}`;
-
-    // =========================================================================
-    // 2. HASHEAR LA CONTRASEÑA CON BCRYPT
-    // =========================================================================
+  
     const saltRounds = 10;
     const contrasenaHash = await bcrypt.hash(contrasenaPlana, saltRounds);
 
-    // =========================================================================
-    // 3. ARREGLO DE VALORES PARA EL STORED PROCEDURE
-    // El orden debe coincidir exactamente con los IN del SP + el Hash
-    // =========================================================================
     const valores = [
       nombre, 
       email, 
       cedula, 
       enfoque, 
-      contrasenaHash // <-- Enviamos el hash al SP
+      contrasenaHash 
     ];
 
-    // Ejecutamos el procedimiento con los 5 signos de interrogación (4 originales + hash)
     await sequelize.query(
       'CALL agregarPsicologo(?, ?, ?, ?, ?)', 
       { replacements: valores }
     );
 
-    // Respondemos con éxito y mostramos la contraseña plana por única vez
     res.json({ 
       message: 'Psychologist registered successfully',
       tempCredentials: {
         username: email,
-        password: contrasenaPlana // Para que se la puedas entregar al psicólogo
+        password: contrasenaPlana 
       }
     });
 
@@ -216,7 +276,8 @@ app.get('/getPsychologistData/:id', async (req, res) => {
 });
 
 
-
+//Citas
+//Endpoint para agendar una cita
 app.post('/addAppointment', async (req, res) => {
   const { 
     id_paciente, 
@@ -260,8 +321,211 @@ app.post('/addAppointment', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+//Endpoint para actualizar una cita
+app.patch('/updateAppointment/:id', async (req, res) => {
+  const { id } = req.params;
+  const { 
+    id_psicologo, 
+    modalidad,
+    fecha_hora 
+    
+  } = req.body;
 
+  try {
+    const [fecha, hora] = fecha_hora.split(' ');
 
+    if (!fecha || !hora) {
+      return res.status(400).json({ error: 'El formato de fecha_hora debe ser "YYYY-MM-DD HH:mm:ss"' });
+    }
+
+    const valores = [
+      id,
+      id_psicologo || null,
+      modalidad || null,
+      fecha || null,
+      hora || null, 
+    ];
+     
+    await sequelize.query('CALL actualizarCita(?,?,?,?,?)', {
+      replacements: valores
+    });
+
+    res.json({ message: 'Appointment updated successfully' });
+  } catch (error) {
+    console.error('Error al actualizar cita:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+//Endpoint para eliminar una cita que no ha ocurrido aún
+app.delete('/deleteAppointment/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await sequelize.query('CALL eliminarCita(:id)', {
+      replacements: { id }
+    });
+    res.json({ message: 'Appointment deleted successfully' });
+  } catch (error) {
+    console.error('Error al eliminar cita:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+//Endpoint para obtener la información de una cita específica
+app.get('/getAppointment/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await sequelize.query('CALL obtenerCita(:id)', {
+      replacements: { id }
+    });
+    res.json(result[0]);
+  } catch (error) {
+    console.error('Error al obtener cita:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  } 
+});
+//Pagos
+//Endpoint para actualizar el estado  o metodo de pago de una cita
+app.patch('/updatePaymentStatus/:id', async (req, res) => {
+  const { id } = req.params;
+  const { estado_pago, metodo_pago } = req.body;
+  try {
+    await sequelize.query('CALL actualizarPago(:id, :estado_pago, :metodo_pago)', {
+      replacements: { id, estado_pago, metodo_pago }
+    });
+    res.json({ message: 'Payment status updated successfully' });
+  } catch (error) {
+    console.error('Error al actualizar estado de pago:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+//Notas clinicas
+//Endpoint para agregar una nota clínica a una cita
+app.post('/addClinicalNote', async (req, res) => {
+  const { id_cita, contenido, enfoque, id_expediente } = req.body;
+  
+  const valores = [id_cita, contenido, enfoque];
+
+  try {
+    await sequelize.query(
+      'CALL agregarNotaClinica(?, ?, ?, )', 
+      { replacements: valores }
+    );
+    
+    res.json({ message: 'Clinical note added successfully' });
+  } catch (error) {
+    console.error('Error al agregar la nota clínica:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+app.patch('/updateClinicalNote/:id', async (req, res) => {
+  const { id } = req.params; // ID de la nota a modificar
+  const { contenido, enfoque } = req.body;
+
+  try {
+    await sequelize.query(
+      'CALL modificarNotaClinica(:id, :contenido, :enfoque)', 
+      { 
+        replacements: { id, contenido, enfoque } 
+      }
+    );
+
+    res.json({ message: 'Clinical note updated successfully' });
+  } catch (error) {
+    console.error('Error al modificar la nota clínica:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+//Endpoint para obtener las notas clínicas de una cita específica
+app.get('/getClinicalNotes/:id_expediente', async (req, res) => {
+  const { id_expediente } = req.params;
+  try {
+    const result = await sequelize.query('CALL obtenerNota(:id_expediente)', {
+      replacements: { id_expediente }
+    });
+    res.json(result[0]);
+  } catch (error) {
+    console.error('Error al obtener notas clínicas:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+//Sin endpoint para eliminar las notas clínicas, ya que por ética profesional no se deberían eliminar los registros clínicos, solo modificarlos si es necesario y siempre dejando un rastro de los cambios realizados.
+//Actividades Paciente
+app.post('/addActivity', async (req, res) => {
+  const { descripcion, id_cita } = req.body;
+
+  try {
+    await sequelize.query('CALL agregarTarea( :descripcion, :id_cita)', {
+      replacements: { id_cita, descripcion }
+    });
+    res.json({ message: 'Activity added successfully' });
+  } catch (error) {
+    console.error('Error al agregar actividad:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+app.patch('/uploadActivityFile/:id_tarea', async (req, res) => {
+  const { id_tarea } = req.params;
+  const { archivo_url } = req.body; // El link del archivo subido
+
+  if (!archivo_url) {
+    return res.status(400).json({ error: 'El campo archivo_url es requerido.' });
+  }
+
+  try {
+    await sequelize.query(
+      'CALL subirArchivoTarea(:id_tarea, :archivo_url)', 
+      { replacements: { id_tarea, archivo_url } }
+    );
+    res.json({ message: 'Document attached to the task successfully' });
+  } catch (error) {
+    console.error('Error al subir archivo de la tarea:', error);
+    res.status(500).json({ error: error.message || 'Internal server error' });
+  }
+});
+app.delete('/deleteActivity/:id_tarea', async (req, res) => {
+  const { id_tarea } = req.params; 
+
+  try {
+    await sequelize.query(
+      'CALL eliminarTarea(?)', 
+      { replacements: [id_tarea] }
+    );
+
+    res.json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    console.error('Error al eliminar la tarea:', error);
+    
+    res.status(400).json({ 
+      error: error.message || 'Internal server error' 
+    });
+  }
+});
+app.patch('/deleteFile/:id_tarea', async (req, res) => {
+  const { id_tarea } = req.params;
+
+  try { 
+    await sequelize.query(
+      'CALL eliminarArchivoTarea(?)',
+      { replacements: [id_tarea] }
+    );
+    res.json({ message: 'File removed from the task successfully' });
+  } catch (error) {
+    console.error('Error al eliminar el archivo de la tarea:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  } 
+});
+app.get('/getActivity/:id_cita', async (req, res) => {
+
+  const { id_cita } = req.params;
+  try {
+    const result = await sequelize.query('CALL obtenerTarea(:id_cita)', {
+      replacements: { id_cita }
+    });
+    res.json(result[0]);
+  } catch (error) {
+    console.error('Error al obtener la actividad:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 app.listen(port, () => {
   console.log(`Servidor Express corriendo unificado en http://localhost:${port}`);
 });
