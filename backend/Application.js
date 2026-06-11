@@ -48,7 +48,7 @@ app.patch('/updatePassword', async (req, res) => {
 
 app.post('/logIn', async (req, res) => {
   const { email, contrasena } = req.body; // 'contrasena' viene en texto plano desde el formulario
-
+console.log(email, contrasena);
   try {
     const [rows] = await sequelize.query(
       'CALL obtenerUsuario(?)',
@@ -104,7 +104,7 @@ app.post('/registerPatientData', async (req, res) => {
 
 
     const saltRounds = 10;
-    const contrasenaHash = await bcrypt.hash(contrasenaPlana, saltRounds);
+    const contrasenaHash = await bycrypt.hash(contrasenaPlana, saltRounds);
 
   
     const valores = [
@@ -207,7 +207,7 @@ app.post('/registerPsychologistData', async (req, res) => {
     const contrasenaPlana = `${primerasCuatroLetras}${ultimosCuatroCedula}`;
   
     const saltRounds = 10;
-    const contrasenaHash = await bcrypt.hash(contrasenaPlana, saltRounds);
+    const contrasenaHash = await bycrypt.hash(contrasenaPlana, saltRounds);
 
     const valores = [
       nombre, 
