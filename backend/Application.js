@@ -6,6 +6,7 @@ const path = require('path');
 const bycrypt = require('bcrypt');
 const sequelize = require('./database.js'); 
 const Usuario = require('./model/Usuario.js'); 
+const { QueryTypes } = require('sequelize');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -14,17 +15,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.patch('/updatePassword', async (req, res) => {
   const { email, nueva_contrasena,  vieja_contrasena } = req.body;
+  console.log(req.body)
   try {
     const [rows] = await sequelize.query(
       'CALL obtenerUsuario(?)',
       { replacements: [email] }
     );
-    const usuario = rows[0];
 
-    if (!usuario) {
+    if (!rows) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
-    const contrasenaValida = await bycrypt.compare(vieja_contrasena, usuario.contrasena);
+    const contrasenaValida = await bycrypt.compare(vieja_contrasena, rows.contrasena);
 
     if (contrasenaValida) {
       const saltRounds = 10;
@@ -55,21 +56,20 @@ console.log(email, contrasena);
       { replacements: [email] }
     );
 
-   
-    const usuario = rows[0]; 
-
+    const usuario = rows.nombre_usuario; // Ajusta esto según la estructura real de tu respuesta
+    console.log('Usuario encontrado:', usuario);
     if (!usuario) {
       return res.status(401).json({ error: 'Usuario no encontrado' });
     }
 
     
-    const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
+    const contrasenaValida = await bycrypt.compare(contrasena, rows.contrasena);
 
     if (!contrasenaValida) {
       return res.status(401).json({ error: 'Contraseña inválida' });
     }
 
-    if (usuario.estado !== 1) {
+    if (rows.estado !== 1) {
       return res.status(403).json({ error: 'Este usuario se encuentra inactivo' });
     }
 
@@ -77,9 +77,9 @@ console.log(email, contrasena);
     res.json({
       message: 'Login successful',
       user: {
-        id: usuario.id_usuario,
-        nombre: usuario.nombre_usuario,
-        rol: usuario.rol_usuario
+        id: rows.id_usuario,
+        nombre: rows.nombre_usuario,
+        rol: rows.rol_usuario
       }
     });
 } catch (error) {
@@ -370,6 +370,21 @@ app.delete('/deleteAppointment/:id', async (req, res) => {
   }
 });
 //Endpoint para obtener la información de una cita específica
+app.get('/getAppointmentbyPatient/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const result = await sequelize.query('SELECT * FROM obtenercitaspaciente WHERE id_cliente = :id', {
+      replacements: { id },
+      type: QueryTypes.SELECT
+    });
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error('Error al obtener cita:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 app.get('/getAppointment/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -416,7 +431,7 @@ app.post('/addClinicalNote', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-app.patch('/updateClinicalNote/:id', async (req, res) => {
+/*app.patch('/updateClinicalNote/:id', async (req, res) => {
   const { id } = req.params; // ID de la nota a modificar
   const { contenido, enfoque } = req.body;
 
@@ -433,7 +448,7 @@ app.patch('/updateClinicalNote/:id', async (req, res) => {
     console.error('Error al modificar la nota clínica:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+});*/
 //Endpoint para obtener las notas clínicas de una cita específica
 app.get('/getClinicalNotes/:id_expediente', async (req, res) => {
   const { id_expediente } = req.params;
