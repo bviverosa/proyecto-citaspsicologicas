@@ -31,7 +31,7 @@ export default function UpdatePasswordScreen({ route, navigation }) {
 
     try {
       // 2. Petición HTTP PATCH a tu backend Express
-      const response = await fetch('http://10.0.0.3:8080/updatePassword', {
+      const response = await fetch('http://url:8080/updatePassword', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -48,7 +48,7 @@ export default function UpdatePasswordScreen({ route, navigation }) {
       }
 
       setLoading(false);
-      Alert.alert('Éxito 🎉', 'Tu contraseña ha sido actualizada correctamente.', [
+      Alert.alert('Éxito', 'Tu contraseña ha sido actualizada correctamente.', [
         { 
           text: 'Entendido', 
           onPress: () => {
@@ -72,7 +72,7 @@ export default function UpdatePasswordScreen({ route, navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="lock-open-outline" size={50} color="#2b6cb0" />
+        <Ionicons name="lock-open-outline" size={50} color="#006b0c" />
         <Text style={styles.title}>Actualizar Contraseña</Text>
         <Text style={styles.subtitle}>Asegúrate de escribir una contraseña segura que recuerdes con facilidad.</Text>
       </View>
@@ -142,6 +142,6 @@ const styles = StyleSheet.create({
   form: { backgroundColor: '#fff', padding: 20, borderRadius: 12, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 1.41 },
   label: { fontSize: 14, fontWeight: '600', color: '#4a5568', marginBottom: 5, marginTop: 15 },
   input: { borderWidth: 1, borderColor: '#e2e8f0', padding: 12, borderRadius: 8, fontSize: 16, backgroundColor: '#f8fafc', color: '#2d3748' },
-  button: { backgroundColor: '#2b6cb0', padding: 14, borderRadius: 8, alignItems: 'center', marginTop: 25 },
+  button: { backgroundColor: '#1f4a00', padding: 14, borderRadius: 8, alignItems: 'center', marginTop: 25 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' }
 });

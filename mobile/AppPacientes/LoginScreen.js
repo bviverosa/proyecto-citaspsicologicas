@@ -18,7 +18,7 @@ export default function LoginScreen({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://10.0.0.3:8080/logIn', {
+      const response = await fetch('http://url:8080/logIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailLimpio, contrasena })
@@ -43,8 +43,9 @@ export default function LoginScreen({ onLoginSuccess }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="shield-checkmark" size={65} color="#2b6cb0" />
-        <Text style={styles.appTitle}>Portal de Pacientes</Text>
+        {/* 🎨 Icono actualizado a verde clínico medio */}
+        <Ionicons name="shield-checkmark" size={65} color="#38a169" />
+        <Text style={styles.appTitle}>Serenamente</Text>
         <Text style={styles.subtitle}>Gestiona tu proceso terapéutico</Text>
       </View>
 
@@ -55,8 +56,8 @@ export default function LoginScreen({ onLoginSuccess }) {
           placeholder="ejemplo@correo.com"
           value={email}
           onChangeText={setEmail}
-          keyboardType="email-address" // Configura el teclado con la "@" y el "." a la mano
-          autoCapitalize="none"        // Evita que la primera letra se ponga en mayúscula automáticamente
+          keyboardType="email-address" 
+          autoCapitalize="none"        
           autoCorrect={false}
         />
 
@@ -71,6 +72,7 @@ export default function LoginScreen({ onLoginSuccess }) {
           autoCorrect={false}
         />
 
+        {/* 🎨 Botón actualizado a verde claro principal */}
         <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -86,11 +88,11 @@ export default function LoginScreen({ onLoginSuccess }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f7fafc', justifyContent: 'center', padding: 20 },
   header: { alignItems: 'center', marginBottom: 35 },
-  appTitle: { fontSize: 24, fontWeight: 'bold', color: '#2d3748', marginTop: 10 },
+  appTitle: { fontSize: 24, fontWeight: 'bold', color: '#2d3748', marginTop: 10, fontFamily: 'sans-serif' },
   subtitle: { fontSize: 14, color: '#718096', marginTop: 5, textAlign: 'center' },
   form: { backgroundColor: '#fff', padding: 20, borderRadius: 12, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3.84 },
   label: { fontSize: 14, fontWeight: '600', color: '#4a5568', marginBottom: 6, marginTop: 15 },
   input: { borderWidth: 1, borderColor: '#e2e8f0', padding: 12, borderRadius: 8, fontSize: 16, backgroundColor: '#f8fafc', color: '#2d3748' },
-  button: { backgroundColor: '#2b6cb0', padding: 14, borderRadius: 8, alignItems: 'center', marginTop: 25 },
+  button: { backgroundColor: '#48bb78', padding: 14, borderRadius: 8, alignItems: 'center', marginTop: 25 }, // 🎨 Cambio a #48bb78
   buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' }
 });

@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack'; // ← Agrega esto
+import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity, Alert } from 'react-native';
 
 import LoginScreen from './LoginScreen';
 import CitasScreen from './CitasScreen';
-import DetalleCitaScreen from './DetallesCitaScreen'; // ← Agrega esto
+import DetalleCitaScreen from './DetallesCitaScreen'; 
 import TareasScreen from './TareasScreen';
 import UpdatePasswordScreen from './UpdatePasswordScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator(); // ← Agrega esto
+const Stack = createNativeStackNavigator(); 
 
 // ── Stack exclusivo para el flujo de Citas ──────────────────────────────────
 function CitasStack({ route }) {
@@ -21,7 +21,8 @@ function CitasStack({ route }) {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#2b6cb0' },
+        // Actualizado: Header del detalle en verde claro
+        headerStyle: { backgroundColor: '#48bb78' }, 
         headerTintColor: '#fff',
       }}
     >
@@ -29,12 +30,12 @@ function CitasStack({ route }) {
         name="ListaCitas"
         component={CitasScreen}
         initialParams={{ id }}
-        options={{ headerShown: false }} // El Tab ya muestra el header "Mis Citas"
+        options={{ headerShown: false }} 
       />
       <Stack.Screen
         name="DetalleCita"
         component={DetalleCitaScreen}
-        options={{ title: 'Detalle de Cita' }}
+        options={{ title: 'Detail de Cita' }}
       />
     </Stack.Navigator>
   );
@@ -67,10 +68,16 @@ export default function App() {
             }
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#2b6cb0',
-          tabBarInactiveTintColor: 'gray',
-          headerStyle: { backgroundColor: '#2b6cb0' },
-          headerTintColor: '#fff',
+          // 🎨 CONFIGURACIÓN DE COLORES VERDES ────────────────────────────────
+          tabBarActiveTintColor: '#38a169',      // Verde medio-claro para el icono/texto seleccionado
+          tabBarInactiveTintColor: '#000505',    // Un verde/aqua muy claro o gris para los no activos
+          headerStyle: { backgroundColor: '#48bb78' }, // Fondo del Header superior en verde claro
+          headerTintColor: '#fff',               // Texto del Header en blanco para contraste
+          tabBarStyle: {
+            backgroundColor: '#ffffff',          // Fondo de la barra inferior blanco para que resalte el verde
+            borderTopWidth: 1,
+            borderTopColor: '#e2e8f0',
+          },
           headerRight: () => (
             <TouchableOpacity onPress={handleLogout} style={{ marginRight: 15 }}>
               <Ionicons name="log-out-outline" size={24} color="#fff" />
@@ -78,7 +85,6 @@ export default function App() {
           ),
         })}
       >
-        {/* ↓ Ahora apunta al Stack, no directo a CitasScreen */}
         <Tab.Screen
           name="Citas"
           component={CitasStack}
@@ -89,7 +95,7 @@ export default function App() {
           name="Tareas"
           component={TareasScreen}
           initialParams={{ id: user.id }}
-          options={{ title: 'Mis Tareas' }}
+          options={{ title: 'Actividades sugeridas' }}
         />
         <Tab.Screen
           name="Seguridad"

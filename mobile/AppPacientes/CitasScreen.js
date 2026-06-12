@@ -4,36 +4,52 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, 
 export default function CitasScreen({ route, navigation }) {
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // 1. Nuevo estado para controlar la animación de deslizar hacia abajo
+  const [refreshing, setRefreshing] = useState(false);
 
   const { id } = route.params || {}; 
 
+  // 2. Extraemos la función de fetch para poder reutilizarla fácilmente
+  const fetchCitas = async (isRefreshing = false) => {
+    if (!id) {
+      Alert.alert('Error', 'No se detectó un identificador de usuario válido.');
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
+
+    // Si viene de un "pull", no mostramos la pantalla completa de carga central
+    if (!isRefreshing) setLoading(true);
+
+    try {
+      const response = await fetch(`http://url:8080/getAppointmentbyPatient/${id}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'No se pudieron obtener las citas.');
+      }
+
+      setCitas(data);
+    } catch (error) {
+      console.error('Error al traer citas:', error);
+      Alert.alert('Error de conexión', error.message || 'Ocurrió un problema al conectar con el servidor.');
+    } finally {
+      // Apagamos ambos indicadores de carga al terminar la petición
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCitas = async () => {
-      if (!id) {
-        Alert.alert('Error', 'No se detectó un identificador de usuario válido.');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`http://10.0.0.3:8080/getAppointmentbyPatient/${id}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'No se pudieron obtener las citas.');
-        }
-
-        setCitas(data);
-      } catch (error) {
-        console.error('Error al traer citas:', error);
-        Alert.alert('Error de conexión', error.message || 'Ocurrió un problema al conectar con el servidor.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCitas();
   }, [id]);
+
+  // 3. Función que se dispara automáticamente al deslizar hacia abajo
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchCitas(true); // Pasamos true para avisar que es una actualización silenciosa
+  };
 
   if (loading) {
     return (
@@ -47,38 +63,38 @@ export default function CitasScreen({ route, navigation }) {
     <View style={styles.container}>
       <FlatList
         data={citas}
-        // Usamos la combinación de fecha y hora como Key temporal si no viene id_cita en el objeto
         keyExtractor={(item, index) => item.id_cita ? item.id_cita.toString() : index.toString()}
         ListEmptyComponent={<Text style={styles.emptyText}>No tienes citas agendadas en tu historial.</Text>}
+        
+        // 4. Agregamos las propiedades nativas de refresco a la lista
+        refreshing={refreshing} // Vincula el estado booleano
+        onRefresh={handleRefresh} // Vincula la función que recarga los datos
+        
         renderItem={({ item }) => (
-  <TouchableOpacity 
-    style={styles.card} 
-    // 1. Declaramos la función flecha correctamente
-    onPress={() => {
-      console.log('Cita seleccionada:', item.id_cita);
-      
-      // 2. Navegación directa y aplanada con el nombre exacto de la pantalla
-      navigation.navigate('DetalleCita', { id_cita: item.id_cita });
-    }}
-  >
-    <Text style={styles.title}>Sesión del Proceso Clínico</Text>
-    <Text style={styles.text}>📅 Fecha: {item.fecha}</Text>
-    <Text style={styles.text}>🕒 Hora: {item.hora.substring(0, 5)} hrs</Text>
-            
-    {/* Mostramos el nombre del psicólogo usando la propiedad nombre_usuario */}
-    {item.nombre_usuario && (
-      <Text style={styles.text}>👤 Especialista: {item.nombre_usuario}</Text>
-    )}
-            
-    {item.modalidad && (
-      <View style={[styles.badge, item.modalidad === 'Presencial' ? styles.badgePresencial : styles.badgeOnline]}>
-        <Text style={styles.badgeText}>
-          {item.modalidad}
-        </Text>
-      </View>
-    )}
-  </TouchableOpacity>
-)}
+          <TouchableOpacity 
+            style={styles.card} 
+            onPress={() => {
+              console.log('Cita seleccionada:', item.id_cita);
+              navigation.navigate('DetalleCita', { id_cita: item.id_cita });
+            }}
+          >
+            <Text style={styles.title}>Sesión del Proceso Clínico</Text>
+            <Text style={styles.text}>📅 Fecha: {item.fecha}</Text>
+            <Text style={styles.text}>🕒 Hora: {item.hora.substring(0, 5)} hrs</Text>
+                    
+            {item.nombre_usuario && (
+              <Text style={styles.text}>👤 Especialista: {item.nombre_usuario}</Text>
+            )}
+                    
+            {item.modalidad && (
+              <View style={[styles.badge, item.modalidad === 'Presencial' ? styles.badgePresencial : styles.badgeOnline]}>
+                <Text style={styles.badgeText}>
+                  {item.modalidad}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
       />
     </View>
   );

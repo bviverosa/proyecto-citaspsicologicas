@@ -14,7 +14,7 @@ console.log("ID recibido en la pantalla de detalle:", id_cita);
     const fetchDetalleCita = async () => {
       try {
         // Tu endpoint para obtener UNA sola cita por su ID
-        const response = await fetch(`http://10.0.0.3:8080/getAppointment/${id_cita}`);
+        const response = await fetch(`http://url:8080/getAppointment/${id_cita}`);
         const data = await response.json();
         console.log("Detalle de cita recibido del backend:", data);
 

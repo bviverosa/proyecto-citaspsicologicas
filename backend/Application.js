@@ -466,15 +466,31 @@ app.get('/getClinicalNotes/:id_expediente', async (req, res) => {
 //Sin endpoint para eliminar las notas clínicas, ya que por ética profesional no se deberían eliminar los registros clínicos, solo modificarlos si es necesario y siempre dejando un rastro de los cambios realizados.
 //Actividades Paciente
 app.post('/addActivity', async (req, res) => {
-  const { descripcion, id_cita } = req.body;
+  const {  descripcion,id_cita } = req.body;
+  console.log(descripcion, id_cita);
 
   try {
-    await sequelize.query('CALL agregarTarea( :descripcion, :id_cita)', {
-      replacements: { id_cita, descripcion }
+    await sequelize.query('CALL agregarTarea( :id_cita, :descripcion)', {
+      replacements: {  id_cita, descripcion }
     });
     res.json({ message: 'Activity added successfully' });
   } catch (error) {
     console.error('Error al agregar actividad:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+app.get('/getActivitiesByPatient/:id_cliente', async (req, res) => {
+  const { id_cliente } = req.params;
+  console.log("ID del cliente:", id_cliente);
+
+  try {
+    const result = await sequelize.query('SELECT * FROM vistatareas WHERE id_cliente = :id_cliente', {
+      replacements: { id_cliente },
+      type: QueryTypes.SELECT
+    });
+    res.json(result);
+  }catch (error) {
+    console.error('Error al obtener tareas del paciente:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
