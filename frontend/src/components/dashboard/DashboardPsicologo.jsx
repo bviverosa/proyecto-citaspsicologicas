@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Inicio from './Inicio.jsx';
 import Agenda from './Agenda.jsx';
+import Tarea from './Tarea.jsx';
 
 export default function DashboardPsicologo({ usuario, alCerrarSesion }) {
   const [areaActual, setAreaActual] = useState('inicio');
@@ -62,7 +63,7 @@ export default function DashboardPsicologo({ usuario, alCerrarSesion }) {
           {areaActual === 'pacientes' && <h3>Mis Pacientes</h3>}
           {areaActual === 'crear-paciente' && <h3>Registrar Paciente</h3>}
           {areaActual === 'agenda' && <Agenda />}
-          {areaActual === 'tareas' && <h3>Asignar Tareas</h3>}
+          {areaActual === 'tareas' && <Tarea />}
         </main>
       </div>
     </div>
