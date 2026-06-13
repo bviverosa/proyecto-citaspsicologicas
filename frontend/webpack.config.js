@@ -3,13 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: "development",
-  entry: {
-    app: "./src/Aplicacion.jsx",
-  },
+  entry: './src/main.js',
+  
   output: {
     path: path.resolve(__dirname, '../backend/public'),
-    filename: "[name].js",
-    clean: true
+    filename: "app.js",
+    clean: false
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -36,6 +35,13 @@ module.exports = {
       {
         test: /\.mp3$/,
         type: 'asset/resource',
+      },
+      {
+        test: /\.(mp3|wav|ogg)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][ext]'
+        }
       }
     ]
   },

@@ -8,7 +8,7 @@ import SeccionRelax from './components/sections/SeccionRelax.jsx';
 import SeccionRecursos from './components/sections/SeccionRecursos.jsx';
 import Intro from './intro.jsx';
 import Footer from './components/footer.jsx';
-import './estilos.css';
+import './assets/estilos.css';
 
 class Application extends React.Component {
   constructor(props) {
@@ -73,7 +73,7 @@ class Application extends React.Component {
 
     // Condicional para el módulo del psicólogo externo
     if (seccion === 'consultorio') {
-      return <Intro />;
+      return <Intro irA={this.irA} />;
     }
 
     return (

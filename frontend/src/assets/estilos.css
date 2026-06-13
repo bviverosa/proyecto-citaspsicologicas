@@ -25,7 +25,8 @@ body {
 
 /* === HEADER === */
 header {
-    background-color: var(--blanco);
+    background-color: var(--verde-oscuro);
+    color: white;
     padding: 10px 30px;
     display: flex;
     justify-content: space-between;
@@ -97,6 +98,8 @@ main {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 /* === SECCIONES === */
@@ -319,6 +322,8 @@ footer {
     text-align: center;
     padding: 15px;
     font-size: 0.85rem;
+    margin-top: auto; 
+    border-radius: 12px;
 }
 .footer-links a { color: var(--verde-claro); text-decoration: none; margin: 0 10px; }
 
@@ -339,4 +344,228 @@ button[type="submit"]:hover { background-color: var(--verde-medio); }
     .hero img { display: none; }
     .info-grid, .relajacion-grid { grid-template-columns: 1fr; }
     .grid-container { grid-template-columns: 1fr 1fr; }
+}
+/* === ESTILOS PORTAL PSICÓLOGOS === */
+
+.auth-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--beige-fondo);
+}
+
+.auth-header {
+    background-color: var(--verde-oscuro);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.auth-main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Estilo para los links de "Regístrate aquí" */
+.auth-link {
+    color: var(--verde-oscuro);
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.auth-btn {
+    width: 100%;
+    background-color: var(--verde-oscuro);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.auth-btn:hover {
+    background-color: #3a543a;
+    transform: translateY(-2px); /* Un pequeño efecto de elevación al tocarlo */
+}
+
+.auth-btn:hover {
+    background-color: var(--verde-medio);
+}
+
+.auth-footer-simple {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Asegura que el contenedor principal ocupe toda la pantalla */
+.layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* El main se expande para empujar el footer al fondo */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95); /* Blanco ligeramente transparente */
+    padding: 3rem; /* Más aire interno */
+    border-radius: 24px; /* Esquinas más redondeadas para un look amable */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); /* Sombra elegante */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px); /* Efecto cristal */
+}
+
+input {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 8px 0 20px 0;
+    border: 2px solid #e0e6e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: var(--verde-oscuro);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(76, 107, 76, 0.1);
+}
+
+/* El contenedor padre que envuelve todo el layout de la app */
+.app-container {
+    display: flex;
+    min-height: 100vh; /* Ocupa al menos toda la pantalla */
+}
+/* Sidebar profesional */
+.sidebar {
+    width: 260px;
+    background-color: var(--verde-oscuro);
+    color: white;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Cubre toda la altura */
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+/* Botones del sidebar idénticos a los del header */
+.sidebar button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.sidebar button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.btn-cerrar-sesion {
+    margin-top: auto; /* Lo empuja al fondo */
+    background-color: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ff7675 !important; /* Un tono rojizo suave que combina con el verde */
+}
+
+.btn-cerrar-sesion:hover {
+    background-color: #ff7675 !important;
+    color: white !important;
+}
+
+.user-profile-header h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-stats {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.big-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--verde-oscuro);
+    margin: 10px 0 0 0;
+}
+
+.next-event {
+    border: 1px solid #e0e6e0;
+}
+.dashboard-grid {
+    display: grid;
+    /* La primera columna es el sidebar (260px), la segunda el resto de la pantalla (1fr) */
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
+.dashboard-main {
+    padding: 40px;
+    background-color: #f9f9f7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente el bloque de tarjetas */
+    align-items: center;    /* Centra horizontalmente */
+    height: 100%;
+}
+
+.grid-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas iguales */
+    gap: 30px; /* Un poco más de espacio entre ellas */
+    width: 95%; /* Ocupa casi todo el ancho disponible */
+    max-width: 1200px; /* Permite que crezcan más */
+    margin: 0 auto;
+}
+
+.card-stats {
+    background: white;
+    padding: 40px; /* Más espacio interno */
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 220px; /* Más altura para que ocupen más verticalmente */
+    transition: transform 0.3s ease;
+}
+
+.card-stats:hover {
+    transform: translateY(-5px); /* Efecto profesional al pasar el mouse */
+}
+.big-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--verde-oscuro);
+    margin: 10px 0 0 0;
 }

@@ -25,7 +25,7 @@ export default function Layout({ seccion, irA, children }) {
 
       <div className="layout">
         <aside>
-          <h3>Menú principal</h3>
+          <h3 style={{ color: 'var(--blanco)' }}>Menú principal</h3>
           <nav>
             <a className={seccion === 'inicio' ? 'active' : ''} onClick={() => irA('inicio')}>🏠 Inicio</a>
             <a className={seccion === 'test' ? 'active' : ''} onClick={() => irA('test')}>📋 Test de Beck</a>
