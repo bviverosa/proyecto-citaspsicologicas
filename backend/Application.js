@@ -422,7 +422,7 @@ app.post('/addClinicalNote', async (req, res) => {
 
   try {
     await sequelize.query(
-      'CALL agregarNotaClinica(?, ?, ?, )', 
+      'CALL agregarNotaClinica(?, ?, ?, ?)', 
       { replacements: valores }
     );
     
@@ -542,6 +542,11 @@ app.get('/getActivity/:id_cita', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(port, () => {
   console.log(`Servidor Express corriendo unificado en http://localhost:${port}`);
 });
