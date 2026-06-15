@@ -195,6 +195,19 @@ app.put('/deactivatePatient/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+app.get('/getActivePatients/:id_psicologo', async (req, res) => {
+  const { id_psicologo } = req.params;
+
+  try {
+    const response = await sequelize.query('SELECT * FROM obtenenerporpsicologo WHERE id_psicologo = :id_psicologo', {
+      replacements: { id_psicologo }
+    });
+    res.json(response);
+  } catch (error) {
+    console.error('Error al obtener pacientes activos:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 //Psicólogos
 //Endpoint para registrar los datos del psicólogo
