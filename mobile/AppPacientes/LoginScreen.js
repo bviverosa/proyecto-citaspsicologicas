@@ -18,7 +18,7 @@ export default function LoginScreen({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://url:8080/logIn', {
+      const response = await fetch('http://10.100.74.45:8080/logIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailLimpio, contrasena })

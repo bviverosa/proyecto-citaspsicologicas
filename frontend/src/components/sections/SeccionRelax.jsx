@@ -1,6 +1,6 @@
 // src/components/sections/SeccionRelax.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import audioLluvia from '../../lluvia.mp3';
+import audioLluvia from '../../public/lluvia.mp3';
 
 export default function SeccionRelax() {
   const canvasRef = useRef(null);

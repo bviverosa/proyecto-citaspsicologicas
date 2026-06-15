@@ -23,7 +23,7 @@ export default function CitasScreen({ route, navigation }) {
     if (!isRefreshing) setLoading(true);
 
     try {
-      const response = await fetch(`http://url:8080/getAppointmentbyPatient/${id}`);
+      const response = await fetch(`http://10.100.74.45:8080/getAppointmentbyPatient/${id}`);
       const data = await response.json();
 
       if (!response.ok) {

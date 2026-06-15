@@ -22,7 +22,7 @@ export default function TareasScreen({ route }) {
     if (!isRefreshing) setLoading(true);
 
     try {
-      const response = await fetch(`http://url:8080/getActivitiesByPatient/${id}`);
+      const response = await fetch(`http://10.100.74.45:8080/getActivitiesByPatient/${id}`);
       console.log('Fetching tasks for patient ID:', id); // Debug: Verificar el ID que se está usando
       const data = await response.json();
       console.log('Received tasks data:', data); // Debug: Verificar la respuesta del backend

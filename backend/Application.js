@@ -11,7 +11,7 @@ const { QueryTypes } = require('sequelize');
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
++
 
 app.patch('/updatePassword', async (req, res) => {
   const { email, nueva_contrasena,  vieja_contrasena } = req.body;
@@ -92,6 +92,7 @@ console.log(email, contrasena);
 //Endpoint para registrar los datos del paciente
 app.post('/registerPatientData', async (req, res) => {
   const { 
+    id_psicologo,
     nombre, email, fecha_nacim, genero, domicilio, 
     telefono, ocupacion, escolaridad, estado_civil 
   } = req.body;
@@ -108,13 +109,14 @@ app.post('/registerPatientData', async (req, res) => {
 
   
     const valores = [
+      id_psicologo,
       nombre, email, fecha_nacim, genero, domicilio, 
       telefono, ocupacion, escolaridad, estado_civil, 
       contrasenaHash 
     ];
 
     await sequelize.query(
-      'CALL registrarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+      'CALL registrarPaciente(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
       { replacements: valores }
     );
 
