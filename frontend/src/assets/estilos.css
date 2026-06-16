@@ -569,3 +569,114 @@ input:focus {
     color: var(--verde-oscuro);
     margin: 10px 0 0 0;
 }
+
+/* --- ESTILOS DEL FORMULARIO DE REGISTRO --- */
+.form-crear-paciente {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form-crear-paciente .form-card {
+    background-color: var(--color-white, #ffffff);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.form-crear-paciente h2 {
+    color: var(--color-primary-dark, #2d5a43);
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--color-bg-light, #f4f7f5);
+    padding-bottom: 10px;
+}
+
+.form-crear-paciente .form-section {
+    border: 1px solid var(--color-border, #a3b899);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.form-crear-paciente legend {
+    color: var(--color-primary-dark, #2d5a43);
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+.form-crear-paciente .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-crear-paciente .grid-col-2 {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+    .form-crear-paciente .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-crear-paciente .grid-col-2 {
+        grid-column: span 1;
+    }
+}
+
+.form-crear-paciente .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-crear-paciente .form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.form-crear-paciente .form-group input, 
+.form-crear-paciente .form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-crear-paciente .form-group input:focus, 
+.form-crear-paciente .form-group select:focus {
+    border-color: var(--color-primary-medium, #4d775e);
+    box-shadow: 0 0 0 3px rgba(77, 119, 94, 0.15);
+}
+
+.form-crear-paciente .consent-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 25px 0;
+    font-weight: 600;
+}
+
+.form-crear-paciente .consent-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-crear-paciente .btn-submit {
+    background-color: var(--color-primary-medium, #4d775e);
+    color: var(--color-white, #ffffff);
+    border: none;
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-crear-paciente .btn-submit:hover {
+    background-color: var(--color-primary-dark, #2d5a43);
+}
