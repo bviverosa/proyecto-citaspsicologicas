@@ -3,6 +3,7 @@ import Inicio from './Inicio.jsx';
 import Agenda from './Agenda.jsx';
 import CrearPaciente from './CrearPaciente.jsx';
 import Tareas from './Tarea.jsx';
+import VerPacientes from './VerPacientes.jsx';
 
 export default function DashboardPsicologo({ usuario, alCerrarSesion }) {
   const [areaActual, setAreaActual] = useState('inicio');
@@ -52,7 +53,7 @@ export default function DashboardPsicologo({ usuario, alCerrarSesion }) {
           {/* PASAMOS EL USUARIO A TODAS LAS ÁREAS */}
           {areaActual === 'inicio' && <Inicio usuario={usuario} />}
           {areaActual === 'agenda' && <Agenda usuario={usuario} />}
-          {areaActual === 'pacientes' && <div><h3>Mis Pacientes</h3><p>Lista en construcción...</p></div>}
+          {areaActual === 'pacientes' && <VerPacientes usuario={usuario} />}
           {areaActual === 'crear-paciente' && <CrearPaciente usuario={usuario} />}
           {areaActual === 'tareas' && <Tareas usuario={usuario} />}
         </main>

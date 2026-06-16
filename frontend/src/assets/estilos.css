@@ -680,3 +680,46 @@ input:focus {
 .form-crear-paciente .btn-submit:hover {
     background-color: var(--color-primary-dark, #2d5a43);
 }
+
+/* --- TABLA DE PACIENTES --- */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border, #a3b899);
+}
+
+.pacientes-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.pacientes-table th {
+    background-color: var(--verde-oscuro, #2d5a43); /* Adaptado a tu variable global */
+    color: white;
+    padding: 14px 16px;
+    font-weight: 600;
+}
+
+.pacientes-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eaeaea;
+    color: #333;
+}
+
+.pacientes-table tbody tr:nth-child(even) {
+    background-color: #f9fbf9;
+}
+
+.pacientes-table tbody tr:hover {
+    background-color: rgba(77, 119, 94, 0.05);
+}
+
+.no-data {
+    text-align: center;
+    color: #777;
+    padding: 40px !important;
+    font-style: italic;
+}
